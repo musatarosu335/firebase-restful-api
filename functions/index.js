@@ -80,7 +80,7 @@ app.post('/channels', (req, res) => {
 });
 
 // チャンネル一覧の取得
-app.get('/channel', (req, res) => {
+app.get('/channels', (req, res) => {
   let channelsRef = admin.database().ref('channels');
   channelsRef.once('value', (snapshot) => {
     let items = [];
@@ -91,6 +91,20 @@ app.get('/channel', (req, res) => {
     res.header('Content-Type', 'application/json; charset=utf-8');
     res.send({ channels: items });
   });
+});
+
+// メッセージの追加
+app.post('/channels/:cname/messages', (req, res) => {
+  let { cname } = req.parame;
+  let message = {
+    date: new Date().toJSON(),
+    body: req.body.body,
+    user: req.user,
+  };
+  let messagesRef = admin.database().ref(`channels/${cname}/messages`);
+  messagesRef.push(message);
+  res.header('Content-Type', 'application/json; charset=utf-8');
+  res.status(201).json({ result: 'ok' });
 });
 
 // // Create and Deploy Your First Cloud Functions

@@ -41,6 +41,44 @@ const checkUser = (req, res, next) => {
 
 app.use(checkUser);
 
+// チャンネルの作成
+const createChannel = (cname) => {
+  let channelsRef = admin.database().ref('channels');
+  let date1 = new Date();
+  let date2 = new Date();
+  date2.setSeconds(date2.getSeconds() + 1);
+  const defaultDate = `{
+    "messages": {
+      "1": {
+        "body": "Welcome to ${cname} channel!",
+        "date": "${date1.toJSON()}",
+        "user": {
+          "avatar": "",
+          "id": "robot",
+          "name": "Robot"
+        }
+      },
+      "2": {
+        "body": "メッセージを投稿しよう",
+        "date": "${date2.toJSON()}",
+        "user": {
+          "avatar": "",
+          "id": "robot",
+          "name": "Robot"
+        }
+      }
+    }
+  }`;
+  channelsRef.child(cname).set(JSON.parse(defaultDate));
+};
+
+app.post('/channels', (req, res) => {
+  let { cname } = req.body;
+  createChannel(cname);
+  res.header('Content-Type', 'application/json; charset=utf-8');
+  res.status(201).json({ result: 'ok' });
+});
+
 // // Create and Deploy Your First Cloud Functions
 // // https://firebase.google.com/docs/functions/write-firebase-functions
 //

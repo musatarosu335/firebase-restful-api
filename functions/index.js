@@ -1,4 +1,6 @@
+// Firebase Functions SDK(HTTPリクエストをトリガするために使用)
 const functions = require('firebase-functions');
+// Firebase Admin SDK(Realtime Databaseの処理及び認証をするために使用)
 const admin = require('firebase-admin');
 
 admin.initializeApp(functions.config().firebase);

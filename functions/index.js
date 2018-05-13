@@ -107,6 +107,22 @@ app.post('/channels/:cname/messages', (req, res) => {
   res.status(201).json({ result: 'ok' });
 });
 
+// メッセージ一覧の取得
+app.get('/channels/:cname/messages', (req, res) => {
+  let { cname } = req.params;
+  let messagesRef = admin.database().ref(`channels${cname}/messages`).orderByChild('date').limitToLast(20);
+  messagesRef.once('value', (snapshot) => {
+    let items = [];
+    snapshot.forEach((childSnapshot) => {
+      let message = childSnapshot.key;
+      items.push(message);
+    });
+    items.reverse();
+    res.header('Content-Type', 'application/json; charset=utf-8');
+    res.send({ messages: items });
+  });
+});
+
 // // Create and Deploy Your First Cloud Functions
 // // https://firebase.google.com/docs/functions/write-firebase-functions
 //

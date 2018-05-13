@@ -123,6 +123,9 @@ app.get('/channels/:cname/messages', (req, res) => {
   });
 });
 
+// RESTful API を利用
+exports.v1 = functions.https.onRequest(app);
+
 // // Create and Deploy Your First Cloud Functions
 // // https://firebase.google.com/docs/functions/write-firebase-functions
 //

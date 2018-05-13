@@ -20,10 +20,10 @@ const anonymosUser = {
 const checkUser = (req, res, next) => {
   req.user = anonymosUser;
   if (req.query.auth_token !== undefined) {
-    let idToken = req.query.auth_token;
+    const idToken = req.query.auth_token;
     admin.auth().verifiIdToken(idToken)
       .then((decodedIdToken) => {
-        let authUser = {
+        const authUser = {
           id: decodedIdToken.user_id,
           name: decodedIdToken.name,
           avatar: decodedIdToken.picture,
@@ -43,9 +43,9 @@ app.use(checkUser);
 
 // チャンネルの作成
 const createChannel = (cname) => {
-  let channelsRef = admin.database().ref('channels');
-  let date1 = new Date();
-  let date2 = new Date();
+  const channelsRef = admin.database().ref('channels');
+  const date1 = new Date();
+  const date2 = new Date();
   date2.setSeconds(date2.getSeconds() + 1);
   const defaultDate = `{
     "messages": {
@@ -73,7 +73,7 @@ const createChannel = (cname) => {
 };
 
 app.post('/channels', (req, res) => {
-  let { cname } = req.body;
+  const { cname } = req.body;
   createChannel(cname);
   res.header('Content-Type', 'application/json; charset=utf-8');
   res.status(201).json({ result: 'ok' });
@@ -81,11 +81,11 @@ app.post('/channels', (req, res) => {
 
 // チャンネル一覧の取得
 app.get('/channels', (req, res) => {
-  let channelsRef = admin.database().ref('channels');
+  const channelsRef = admin.database().ref('channels');
   channelsRef.once('value', (snapshot) => {
-    let items = [];
+    const items = [];
     snapshot.forEach((childSnapshot) => {
-      let cname = childSnapshot.key;
+      const cname = childSnapshot.key;
       items.push(cname);
     });
     res.header('Content-Type', 'application/json; charset=utf-8');
@@ -95,13 +95,13 @@ app.get('/channels', (req, res) => {
 
 // メッセージの追加
 app.post('/channels/:cname/messages', (req, res) => {
-  let { cname } = req.parame;
-  let message = {
+  const { cname } = req.parame;
+  const message = {
     date: new Date().toJSON(),
     body: req.body.body,
     user: req.user,
   };
-  let messagesRef = admin.database().ref(`channels/${cname}/messages`);
+  const messagesRef = admin.database().ref(`channels/${cname}/messages`);
   messagesRef.push(message);
   res.header('Content-Type', 'application/json; charset=utf-8');
   res.status(201).json({ result: 'ok' });
@@ -109,12 +109,12 @@ app.post('/channels/:cname/messages', (req, res) => {
 
 // メッセージ一覧の取得
 app.get('/channels/:cname/messages', (req, res) => {
-  let { cname } = req.params;
-  let messagesRef = admin.database().ref(`channels${cname}/messages`).orderByChild('date').limitToLast(20);
+  const { cname } = req.params;
+  const messagesRef = admin.database().ref(`channels${cname}/messages`).orderByChild('date').limitToLast(20);
   messagesRef.once('value', (snapshot) => {
-    let items = [];
+    const items = [];
     snapshot.forEach((childSnapshot) => {
-      let message = childSnapshot.key;
+      const message = childSnapshot.key;
       items.push(message);
     });
     items.reverse();

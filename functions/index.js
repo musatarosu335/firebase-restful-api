@@ -79,6 +79,20 @@ app.post('/channels', (req, res) => {
   res.status(201).json({ result: 'ok' });
 });
 
+// チャンネル一覧の取得
+app.get('/channel', (req, res) => {
+  let channelsRef = admin.database().ref('channels');
+  channelsRef.once('value', (snapshot) => {
+    let items = [];
+    snapshot.forEach((childSnapshot) => {
+      let cname = childSnapshot.key;
+      items.push(cname);
+    });
+    res.header('Content-Type', 'application/json; charset=utf-8');
+    res.send({ channels: items });
+  });
+});
+
 // // Create and Deploy Your First Cloud Functions
 // // https://firebase.google.com/docs/functions/write-firebase-functions
 //
